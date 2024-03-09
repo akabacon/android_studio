@@ -1,0 +1,146 @@
+package com.example.myapplication
+
+import android.os.Bundle
+import android.widget.RadioButton
+import android.widget.Switch
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.myapplication.ui.theme.MyApplicationTheme
+import org.w3c.dom.Text
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MyApplicationTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    GUI_Ex()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun GUI_Ex() {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        TF_demo()
+        //Divider(modifier = Modifier.background((Color.Yellow)))
+
+        Spacer(modifier =  Modifier.height((20.dp)))
+        Switch_Demo()
+
+        Spacer(modifier =  Modifier.height((20.dp)))
+        RadioButton_Demo()
+
+        Spacer(modifier =  Modifier.height((20.dp)))
+        chatBox_Demo()
+    }
+}
+@Composable
+fun TF_demo() {
+    var str by remember {
+        mutableStateOf("Hello")
+    }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        TextField(value = str, onValueChange = { str = it })
+        Text(str, fontSize = 25.sp)
+    }
+}
+
+@Composable
+fun Switch_Demo(){
+    var switchOn by remember { mutableStateOf(false) }
+    Row(horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically)
+    {
+        Switch(checked = switchOn, onCheckedChange = { switchOn = !switchOn } )
+        var sText = if(switchOn) "on" else "off"
+        Text(sText)
+    }
+}
+
+@Composable
+fun RadioButton_Demo(){
+    val fruits = listOf("Apple", "Mango", "Guava")
+    var fruitName by remember {
+        mutableStateOf(fruits[0])
+    }
+
+    val configuration = LocalConfiguration.current
+
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    Row (
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier =Modifier.width(screenWidth - 100.dp)
+            ){
+        fruits.forEach { theFruit ->
+            Column (horizontalAlignment = Alignment.CenterHorizontally)
+            {
+                RadioButton(selected = (theFruit == fruitName), onClick = { fruitName = theFruit }) //fruitName will be three
+                Text(theFruit)
+                
+            }
+        }
+    }
+    Text(text = fruitName, fontSize = 30.sp)
+}
+
+@Composable
+fun chatBox_Demo(){
+    val cities = listOf("Taipei", "Taichung", "kaohsiung")
+    var citytName by remember {
+        mutableStateOf(cities[0])
+    }
+
+    val checks = remember {
+        arrayOf(
+            mutableStateOf(false),
+            mutableStateOf(false),
+            mutableStateOf(false)
+        )
+    }
+    val configuration = LocalConfiguration.current
+
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    Row (
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier =Modifier.width(screenWidth - 100.dp)
+    )
+    {
+        cities.forEachIndexed { index, city ->
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Checkbox(checks[index].value, onCheckedChange = { checks[index].value = it })
+                Text(city)
+            }
+        }
+
+    }
+    var str = if(checks[0].value) "taipei" else ""
+    if (checks[1].value) str +=" taichung"
+    if (checks[2].value) str +=" kaohsiung"
+
+    Text(str, fontSize = 30.sp)
+}
