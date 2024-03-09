@@ -1,0 +1,51 @@
+@Composable
+fun Modifier_Demo() {
+
+    val options = listOf("Border", "offset", "MaxWidth", "Background")
+    var checkedArray = remember {
+        listOf(
+            mutableStateOf(false),
+            mutableStateOf(false),
+            mutableStateOf(false),
+            mutableStateOf(false)
+        )
+
+    }
+
+    val listModifier = listOf(
+        Modifier.border(width = 3.dp, color = Color.Magenta),
+        Modifier.offset(x = 20.dp, y = 20.dp),
+        Modifier.fillMaxWidth(0.5f),
+        Modifier.background(color = Color.Cyan)
+    )
+
+    Column(
+        horizontalAlignment = Alignment.Start
+    ) {
+        options.forEachIndexed { index, oName ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = checkedArray[index].value,
+                    onCheckedChange = { checkedArray[index].value = it })
+                Text(oName)
+            }
+
+        }
+        var combinedModifier = Modifier.padding(50.dp)
+        for (i in options.indices) {
+            if (checkedArray[i].value) {
+                combinedModifier = combinedModifier.then(listModifier[i])
+            }
+        }
+        Box(
+            modifier = Modifier
+                .padding(50.dp)
+                .background(color = Color.LightGray, shape = RoundedCornerShape(8.dp))
+                .size(400.dp)
+        ){
+            Text(text = "Show Me", fontSize = 30.sp, modifier = combinedModifier)
+        }
+    }
+
+}
+
