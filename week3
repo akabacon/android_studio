@@ -1,0 +1,122 @@
+@Composable
+fun Button_Demo() {
+    val types = listOf("Filled", "Outlined", "Text")
+    var checkedButton by remember { mutableStateOf(0) }
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            types.forEachIndexed { index, theType ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(selected = (checkedButton == index),
+                        onClick = { checkedButton = index })
+                    Text(types[index])
+                }
+            }
+        }
+        when (checkedButton) {
+            0 -> Button(onClick = { /*TODO*/ }) {
+                Text(types[0])
+            }
+            1 -> Button(onClick = { /*TODO*/ }) {
+                Text(types[1])
+            }
+            2 -> Button(onClick = { /*TODO*/ }) {
+                Text(types[2])
+            }
+        }
+        for (i in types.indices) {
+            if (checkedButton == i) {
+                Button(onClick = { /* TODO */ }) {
+                    Text(types[i])
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DropDownMenu_Demo() {
+    val fruits = listOf("Apple", "Mango", "Guava")
+    var fruitName by remember {
+        mutableStateOf(fruits[0])
+    }
+    var bexpand by remember {
+        mutableStateOf(false)
+    }
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(text = "Fruit: ", modifier = Modifier.weight(0.2f))
+        TextField(
+            value = fruitName,
+            onValueChange = { fruitName = it },
+            modifier = Modifier.weight(0.7f)
+        )
+        IconButton(
+            onClick = { bexpand = !bexpand },
+            modifier = Modifier.weight(0.1f)
+        ) {
+            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More")
+        }
+    }
+    DropdownMenu(expanded = bexpand, onDismissRequest = { bexpand = false }) {
+        fruits.forEach { theFruit ->
+            DropdownMenuItem(onClick = { fruitName = theFruit }, text = { Text(theFruit) }
+            )
+        }
+    }
+}
+
+@Composable
+fun Modifier_Demo() {
+
+    val options = listOf("Border", "offset", "MaxWidth", "Background")
+    var checkedArray = remember {
+        listOf(
+            mutableStateOf(false),
+            mutableStateOf(false),
+            mutableStateOf(false),
+            mutableStateOf(false)
+        )
+
+    }
+
+    val listModifier = listOf(
+        Modifier.border(width = 3.dp, color = Color.Magenta),
+        Modifier.offset(x = 20.dp, y = 20.dp),
+        Modifier.fillMaxWidth(0.5f),
+        Modifier.background(color = Color.Cyan)
+    )
+
+    Column(
+        horizontalAlignment = Alignment.Start
+    ) {
+        options.forEachIndexed { index, oName ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = checkedArray[index].value,
+                    onCheckedChange = { checkedArray[index].value = it })
+                Text(oName)
+            }
+
+        }
+        var combinedModifier = Modifier.padding(50.dp)
+        for (i in options.indices) {
+            if (checkedArray[i].value) {
+                combinedModifier = combinedModifier.then(listModifier[i])
+            }
+        }
+        Box(
+            modifier = Modifier
+                .padding(50.dp)
+                .background(color = Color.LightGray, shape = RoundedCornerShape(8.dp))
+                .size(400.dp)
+        ){
+            Text(text = "Show Me", fontSize = 30.sp, modifier = combinedModifier)
+        }
+    }
+
+}
