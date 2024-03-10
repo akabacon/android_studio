@@ -1,0 +1,31 @@
+@Composable
+fun DropDownMenu_Demo() {
+    val fruits = listOf("Apple", "Mango", "Guava")
+    var fruitName by remember {
+        mutableStateOf(fruits[0])
+    }
+    var bexpand by remember {
+        mutableStateOf(false)
+    }
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(text = "Fruit: ", modifier = Modifier.weight(0.2f))
+        TextField(
+            value = fruitName,
+            onValueChange = { fruitName = it },
+            modifier = Modifier.weight(0.7f)
+        )
+        IconButton(
+            onClick = { bexpand = !bexpand },
+            modifier = Modifier.weight(0.1f)
+        ) {
+            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More")
+        }
+    }
+    DropdownMenu(expanded = bexpand, onDismissRequest = { bexpand = false }) {
+        fruits.forEach { theFruit ->
+            DropdownMenuItem(onClick = { fruitName = theFruit }, text = { Text(theFruit) }
+            )
+        }
+    }
+}
