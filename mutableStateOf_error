@@ -1,4 +1,0 @@
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-
-var checkedButton by remember { mutableStateOf(0) }
