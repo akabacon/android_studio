@@ -6,12 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,81 +73,86 @@ fun Image_Demo() {
 
 @Composable
 fun ImageScaler() {
-    val scales = listOf("Fit","Crop","FillHeight","FillWidth","FillBounds","Inside","None")
-    var scaleNo by remember {
-        mutableStateOf(0)
+    val scales = listOf("Fit", "Crop", "FillHeight", "FillWidth", "FillBounds", "Inside", "None")
+    val scaleList = remember {
+        listOf(
+            ContentScale.Fit,
+            ContentScale.Crop,
+            ContentScale.FillHeight,
+            ContentScale.FillWidth,
+            ContentScale.FillBounds,
+            ContentScale.Inside,
+            ContentScale.None
+        )
     }
-    val scaleList = remember { listOf(
-        ContentScale.Fit,
-        ContentScale.Crop,
-        ContentScale.FillHeight,
-        ContentScale.FillWidth,
-        ContentScale.FillBounds,
-        ContentScale.Inside,
-        ContentScale.None
-    ) }
 
+    val clips = listOf("None", "CircleShape", "RoundedCornerShape")
 
-    val clips = listOf("None","CircleShape","RoundedCornerShape")
-    var clipNo by remember {
-        mutableStateOf(0)
-    }
+    var scaleNo by remember { mutableStateOf(0) }
+    var clipNo by remember { mutableStateOf(0) }
 
     var clipModifier = Modifier.size(120.dp)
-    when (clipNo){
-        1 -> clipModifier.clip(CircleShape)
-        2 -> clipModifier.clip(RoundedCornerShape(16.dp))
+
+    when (clipNo) {
+        1 -> clipModifier = clipModifier.clip(CircleShape)
+        2 -> clipModifier = clipModifier.clip(RoundedCornerShape(16.dp))
     }
-    Column {
-        scales.forEachIndexed { index, scale ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = scaleNo == index,
-                    onClick = { scaleNo = index }
-                )
-                Text(scale)
+
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Column {
+            // Scale options
+            scales.forEachIndexed { index, scale ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    RadioButton(
+                        selected = scaleNo == index,
+                        onClick = { scaleNo = index }
+                    )
+                    Text(scale, modifier = Modifier.padding(start = 8.dp))
+                }
+            }
+
+            // Separator
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+
+            // Clip options
+            clips.forEachIndexed { index, clip ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                ) {
+                    RadioButton(
+                        selected = clipNo == index,
+                        onClick = { clipNo = index }
+                    )
+                    Text(clip, modifier = Modifier.padding(start = 8.dp))
+                }
             }
         }
 
-
-        clips.forEachIndexed { index, clip ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = clipNo == index,
-                    onClick = { clipNo = index }
-                )
-                Text(clip)
-            }
-        }
-
-
-        var nowContentScale=scaleList[scaleNo]
+        // Images
         Row(
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(vertical = 16.dp)
         ) {
             Image(
                 painter = painterResource(id = R.drawable.mouse1),
-                contentScale = nowContentScale,
+                contentScale = scaleList[scaleNo],
                 contentDescription = "this is my mouse",
-                modifier = Modifier
-                    .size(120.dp)
-                    .border(width = 2.dp, color = androidx.compose.ui.graphics.Color.Magenta)
+                modifier = clipModifier.border(width = 2.dp, color = androidx.compose.ui.graphics.Color.Magenta)
             )
             Image(
                 painter = painterResource(id = R.drawable.mouse2),
-                contentScale = nowContentScale,
+                contentScale = scaleList[scaleNo],
                 contentDescription = "ay cute mouse",
-                modifier = Modifier
-                    .size(120.dp)
-                    .border(width = 2.dp, color = androidx.compose.ui.graphics.Color.Magenta)
+                modifier = clipModifier.border(width = 2.dp, color = androidx.compose.ui.graphics.Color.Magenta)
             )
-
-
         }
     }
-    }
-
+}
