@@ -1,0 +1,154 @@
+package com.example.myapplication
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButton
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.myapplication.ui.theme.MyApplicationTheme
+import org.w3c.dom.Text
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MyApplicationTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    ImageScaler()
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun Image_Demo() {
+    // FlowRow
+    // FlowRow
+    // Row 2 images
+    Row(
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.mouse1),
+            contentScale = ContentScale.Fit,
+            contentDescription = "this is my mouse",
+            modifier = Modifier
+                .size(120.dp)
+                .border(width = 2.dp, color = androidx.compose.ui.graphics.Color.Magenta)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.mouse2),
+            contentScale = ContentScale.Fit,
+            contentDescription = "ay cute mouse",
+            modifier = Modifier
+                .size(120.dp)
+                .border(width = 2.dp, color = androidx.compose.ui.graphics.Color.Magenta)
+        )
+
+
+    }
+}
+
+@Composable
+fun ImageScaler() {
+    val scales = listOf("Fit","Crop","FillHeight","FillWidth","FillBounds","Inside","None")
+    var scaleNo by remember {
+        mutableStateOf(0)
+    }
+    val scaleList = remember { listOf(
+        ContentScale.Fit,
+        ContentScale.Crop,
+        ContentScale.FillHeight,
+        ContentScale.FillWidth,
+        ContentScale.FillBounds,
+        ContentScale.Inside,
+        ContentScale.None
+    ) }
+
+
+    val clips = listOf("None","CircleShape","RoundedCornerShape")
+    var clipNo by remember {
+        mutableStateOf(0)
+    }
+
+    var clipModifier = Modifier.size(120.dp)
+    when (clipNo){
+        1 -> clipModifier.clip(CircleShape)
+        2 -> clipModifier.clip(RoundedCornerShape(16.dp))
+    }
+    Column {
+        scales.forEachIndexed { index, scale ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = scaleNo == index,
+                    onClick = { scaleNo = index }
+                )
+                Text(scale)
+            }
+        }
+
+
+        clips.forEachIndexed { index, clip ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = clipNo == index,
+                    onClick = { clipNo = index }
+                )
+                Text(clip)
+            }
+        }
+
+
+        var nowContentScale=scaleList[scaleNo]
+        Row(
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.mouse1),
+                contentScale = nowContentScale,
+                contentDescription = "this is my mouse",
+                modifier = Modifier
+                    .size(120.dp)
+                    .border(width = 2.dp, color = androidx.compose.ui.graphics.Color.Magenta)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.mouse2),
+                contentScale = nowContentScale,
+                contentDescription = "ay cute mouse",
+                modifier = Modifier
+                    .size(120.dp)
+                    .border(width = 2.dp, color = androidx.compose.ui.graphics.Color.Magenta)
+            )
+
+
+        }
+    }
+    }
+
